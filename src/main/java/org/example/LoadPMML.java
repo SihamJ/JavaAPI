@@ -44,7 +44,7 @@ public class LoadPMML {
         features.put("PAYMENT", 0.0);
         features.put("TRANSFER", 0.0);
         features.put("isFlaggedFraud", 1.0);
-        features.put("isFraud", 0.0);
+       // features.put("isFraud", 0.0);
 
         Map<FieldName, FieldValue> arguments = new LinkedHashMap<>();
         for (InputField inputField : inputFields) {
