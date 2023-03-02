@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.*;
 
 @Component
-public class UserService {
+public class AlgorithmService {
     private List<Algorithm> algorithmList;
 
-    public UserService(){
+    public AlgorithmService(){
 
         algorithmList = new ArrayList<>();
 

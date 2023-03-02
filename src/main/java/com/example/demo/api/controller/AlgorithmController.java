@@ -1,26 +1,21 @@
 package com.example.demo.api.controller;
 
 import com.example.demo.api.model.Algorithm;
-import com.example.demo.api.model.AlgorithmONNX;
-import com.example.demo.api.model.AlgorithmPMML;
-import com.example.demo.service.UserService;
+import com.example.demo.service.AlgorithmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 
-import com.example.demo.utils.Utils;
-
 @RestController
-public class UserController {
+public class AlgorithmController {
 
     @Autowired
-    private UserService userService;
+    private AlgorithmService userService;
 
-    public UserController(UserService userService){
+    public AlgorithmController(AlgorithmService userService){
         this.userService = userService;
     }
 
