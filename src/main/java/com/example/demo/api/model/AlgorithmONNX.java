@@ -45,10 +45,9 @@ public class AlgorithmONNX extends Algorithm {
         }
 
         result.close();
-        this.session.close();
-        this.env.close();
 
         return outputValues[0][0];
     }
+
 
 }

@@ -25,11 +25,8 @@ public class AlgorithmController {
     }
 
     @GetMapping(path = "/algorithm")
-    public Object getAlgo(@RequestParam Integer id, @RequestParam float[] values){
-        if(values.length != Utils.NB_ATTRIBUTES){
-            System.out.println("Wrong number of attributes");
-            return null;
-        }
+    public Object predict(@RequestParam Integer id, @RequestParam float[] values){
+
         Optional algo = userService.getAlgorithm(id);
         if(algo.isPresent()){
             Algorithm algorithm = (Algorithm) algo.get();
@@ -47,7 +44,7 @@ public class AlgorithmController {
                 System.out.println("Failed to predict class");
             }
             Map prediction = Collections.singletonMap("isFraud", y);
-            return new Object[]{ algo.get(), prediction};
+            return new Object[]{ algorithm, prediction};
         }
         return null;
     }

@@ -43,4 +43,5 @@ public abstract class Algorithm {
     public abstract float predict(float[] values) throws Exception;
     public abstract void loadAlgorithm() throws Exception;
 
+
 }
