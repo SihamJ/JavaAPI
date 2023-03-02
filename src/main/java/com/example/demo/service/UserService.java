@@ -1,28 +1,34 @@
 package com.example.demo.service;
 
-import com.example.demo.api.model.User;
+import com.example.demo.api.model.*;
+import org.springframework.stereotype.Component;
+import com.example.demo.utils.Utils;
 
 import java.util.Optional;
 import java.util.*;
 
-
+@Component
 public class UserService {
-
-    private List<User> userList;
+    private List<Algorithm> algorithmList;
 
     public UserService(){
-        userList = new ArrayList<User>();
 
-        User user1 = new User(1, "Isa", 30, "isa@gmail.com");
-        User user2 = new User(2, "Yahya", 14, "yahya@gmail.com");
+        algorithmList = new ArrayList<>();
 
-        userList.addAll(Arrays.asList(user1, user2));
+        Algorithm SVM = new AlgorithmPMML(Utils.SVM, "Support Vector Machine", "svm.pmml", Utils.PMML);
+        Algorithm RF = new AlgorithmPMML(Utils.RANDOM_FOREST, "Random Forest", "rf.pmml", Utils.PMML);
+        Algorithm CNN = new AlgorithmONNX(Utils.CNN, "CNN", "cnn.onnx", Utils.ONNX);
+        Algorithm DT = new AlgorithmPMML(Utils.DECISION_TREE, "Decision Tree", "dtree.pmml", Utils.PMML);
+
+        algorithmList.addAll(Arrays.asList(CNN, SVM, RF, DT));
     }
-    public Optional<User> getUser(Integer id){
+
+
+    public Optional<Algorithm> getAlgorithm(Integer id){
         Optional optional = Optional.empty();
-        for(User user: userList){
-            if(id == user.getId()){
-                optional = Optional.of(user);
+        for(Algorithm algo: algorithmList){
+            if(id == algo.getId()){
+                optional = Optional.of(algo);
                 return optional;
             }
         }
