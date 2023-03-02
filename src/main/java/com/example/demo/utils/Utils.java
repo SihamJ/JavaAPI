@@ -2,6 +2,8 @@ package com.example.demo.utils;
 
 public class Utils {
 
+    public static final int     NB_ATTRIBUTES   = 12;
+
     public static final int 	SVM 			= 1;
     public static final int 	RANDOM_FOREST 		= 2;
     public static final int 	CNN 	= 3;

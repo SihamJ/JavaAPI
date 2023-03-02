@@ -40,24 +40,24 @@ public class AlgorithmPMML extends Algorithm {
         FieldName targetName = this.evaluator.getTargetFields().get(0).getName();
         List<InputField> inputFields = this.evaluator.getInputFields();
 
-        Map<String, Double> features = new HashMap<>();
-        features.put("step", 4.9600000e+02);
-        features.put("amount", 7.6615145e+05);
-        features.put("oldbalanceOrg", 7.6615145e+05);
-        features.put("newbalanceOrig", 0.0);
-        features.put("oldbalanceDest", 0.0);
-        features.put("newbalanceDest", 0.0);
-        features.put("CASH_IN", 0.0);
-        features.put("CASH_OUT", 0.0);
-        features.put("DEBIT", 0.0);
-        features.put("PAYMENT", 0.0);
-        features.put("TRANSFER", 0.0);
-        features.put("isFlaggedFraud", 1.0);
+        Map<String, Float> features = new HashMap<>();
+        features.put("step", values[0]);
+        features.put("amount", values[1]);
+        features.put("oldbalanceOrg", values[2]);
+        features.put("newbalanceOrig", values[3]);
+        features.put("oldbalanceDest", values[4]);
+        features.put("newbalanceDest", values[5]);
+        features.put("CASH_IN", values[6]);
+        features.put("CASH_OUT", values[7]);
+        features.put("DEBIT", values[8]);
+        features.put("PAYMENT", values[9]);
+        features.put("TRANSFER", values[10]);
+        features.put("isFlaggedFraud", values[11]);
 
         Map<FieldName, FieldValue> arguments = new LinkedHashMap<>();
         for (InputField inputField : inputFields) {
             FieldName inputName = inputField.getName();
-            Double value = features.get(inputName.toString());
+            Float value = features.get(inputName.toString());
             FieldValue inputValue = inputField.prepare(value);
             arguments.put(inputName, inputValue);
         }

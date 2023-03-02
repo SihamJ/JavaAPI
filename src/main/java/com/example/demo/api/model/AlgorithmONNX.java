@@ -20,10 +20,9 @@ public class AlgorithmONNX extends Algorithm {
         this.session = env.createSession("/home/sihartist/Desktop/JavaAPI/src/main/resources/models/" + this.getFilename(), opts);
     }
 
-    public float predict(float[] vals) throws OrtException{
+    public float predict(float[] values) throws OrtException{
 
         long[] shape = new long[] {1, 12, 1};
-        float[] values = new float[] {4.9600000e+02f, 7.6615145e+05f, 7.6615145e+05f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
         FloatBuffer buffer = FloatBuffer.allocate(values.length);
         for (double d : values) {

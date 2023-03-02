@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.demo.utils.Utils;
 import java.util.*;
 
 @RestController
@@ -25,7 +25,11 @@ public class AlgorithmController {
     }
 
     @GetMapping(path = "/algorithm")
-    public Object getAlgo(@RequestParam Integer id){
+    public Object getAlgo(@RequestParam Integer id, @RequestParam float[] values){
+        if(values.length != Utils.NB_ATTRIBUTES){
+            System.out.println("Wrong number of attributes");
+            return null;
+        }
         Optional algo = userService.getAlgorithm(id);
         if(algo.isPresent()){
             Algorithm algorithm = (Algorithm) algo.get();
@@ -37,13 +41,13 @@ public class AlgorithmController {
             }
             float y = -1.0f;
             try {
-                y = algorithm.predict(new float[3]);
+                y = algorithm.predict(values);
             }
             catch(Exception e){
                 System.out.println("Failed to predict class");
             }
             Map prediction = Collections.singletonMap("isFraud", y);
-            return new Object[]{(Algorithm) algo.get(), prediction};
+            return new Object[]{ algo.get(), prediction};
         }
         return null;
     }
