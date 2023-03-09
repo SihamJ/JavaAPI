@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.*;
+import org.json.JSONArray;
 import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -19,8 +20,8 @@ public class AlgorithmPMML extends Algorithm {
     private String modelFolder;
     private Path modelPath;
 
-    public AlgorithmPMML(int id, String name, String filename, int type){
-        super(id, name, filename, type);
+    public AlgorithmPMML(int id, String name, String description, String filename, int type){
+        super(id, name, description, filename, type);
     }
 
     public void loadAlgorithm()  throws JAXBException, IOException, SAXException {
@@ -33,9 +34,10 @@ public class AlgorithmPMML extends Algorithm {
                 .build();
 
         this.evaluator.verify();
+        this.loaded = Boolean.TRUE;
     }
 
-    public float predict(float[] values){
+    public float predict(JSONArray values){
 
         FieldName targetName = this.evaluator.getTargetFields().get(0).getName();
         List<InputField> inputFields = this.evaluator.getInputFields();
@@ -44,16 +46,13 @@ public class AlgorithmPMML extends Algorithm {
 
         for(int i=0; i < inputFields.size(); i++){
             InputField inputField = inputFields.get(i);
-            arguments.put(inputField.getName(), inputField.prepare(values[i]));
+            arguments.put(inputField.getName(), inputField.prepare(values.getFloat(i)));
         }
 
         Map<FieldName, ?> results = this.evaluator.evaluate(arguments);// Extracting prediction
         Map<String, ?> resultRecord = EvaluatorUtil.decodeAll(results);
 
         float y = ((Integer)resultRecord.get(targetName.toString())).floatValue();
-
-        System.out.printf("Prediction is %f\n", y);
-        System.out.printf("PMML output: %s\n", resultRecord);
 
         return y;
     }

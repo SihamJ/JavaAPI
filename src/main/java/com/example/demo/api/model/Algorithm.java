@@ -1,17 +1,23 @@
 package com.example.demo.api.model;
 
 
-public abstract class Algorithm {
-    private int id;
-    private String name;
-    private String filename;
-    private int type;
+import org.json.JSONArray;
 
-    public Algorithm(int id, String name, String filename, int type){
+public abstract class Algorithm {
+    protected int id;
+    protected String name;
+    protected String description;
+    protected String filename;
+    protected int type;
+    protected Boolean loaded;
+
+    public Algorithm(int id, String name, String description, String filename, int type){
         this.id = id;
         this.name = name;
+        this.description = description;
         this.filename = filename;
         this.type = type;
+        this.loaded = Boolean.FALSE;
     }
     public int getId(){
         return this.id;
@@ -24,7 +30,12 @@ public abstract class Algorithm {
     }
     public void setName(String name){
         this.name = name;
-
+    }
+    public String getDescription() {
+        return this.description;
+    }
+    public void setDescription(String description){
+        this.description = description;
     }
     public String getFilename() {
         return this.filename;
@@ -40,7 +51,11 @@ public abstract class Algorithm {
         this.type = type;
     }
 
-    public abstract float predict(float[] values) throws Exception;
+    public Boolean isLoaded(){
+        return this.loaded;
+    }
+
+    public abstract float predict(JSONArray values) throws Exception;
     public abstract void loadAlgorithm() throws Exception;
 
 

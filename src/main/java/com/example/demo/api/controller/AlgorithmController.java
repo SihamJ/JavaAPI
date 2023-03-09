@@ -2,21 +2,21 @@ package com.example.demo.api.controller;
 
 import com.example.demo.api.model.Algorithm;
 import com.example.demo.service.AlgorithmService;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import com.example.demo.utils.Utils;
+import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
 public class AlgorithmController {
 
     @Autowired
-    private AlgorithmService userService;
+    private AlgorithmService algorithmService;
 
-    public AlgorithmController(AlgorithmService userService){
-        this.userService = userService;
+    public AlgorithmController(AlgorithmService algorithmService){
+        this.algorithmService = algorithmService;
     }
 
     @GetMapping("/hello")
@@ -24,28 +24,65 @@ public class AlgorithmController {
         return "Hello World";
     }
 
-    @GetMapping(path = "/algorithm")
-    public Object predict(@RequestParam Integer id, @RequestParam float[] values){
+    @RequestMapping(value = "/predict", method = RequestMethod.POST)
+    public HashMap predict(@RequestBody String payload) throws Exception {
 
-        Optional algo = userService.getAlgorithm(id);
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(payload);
+        }catch (JSONException err){
+            return new HashMap<String, Object>(){
+                {
+                    put("message", "Failed to load JSON request: " + err.toString());
+                    put("isFraud", -1);
+                }
+            };
+        }
+        String algoName = jsonObject.getString("algo");
+
+        Optional algo = algorithmService.getAlgorithm(algoName);
+
         if(algo.isPresent()){
             Algorithm algorithm = (Algorithm) algo.get();
-            try {
-                algorithm.loadAlgorithm();
+            String algoDescription = algorithm.getDescription();
+
+
+            if( ! algorithm.isLoaded()){
+                return new HashMap<String, Object>(){
+                    {
+                        put("message", "Failed to load " + algoDescription);
+                        put("isFraud", -1);
+                    }
+                };
             }
-            catch(Exception e){
-                System.out.println("Failed to load algorithm");
-            }
+
             float y = -1.0f;
             try {
-                y = algorithm.predict(values);
+                y = algorithm.predict((JSONArray) jsonObject.get("transaction"));
             }
-            catch(Exception e){
-                System.out.println("Failed to predict class");
+            catch(Exception e) {
+                return new HashMap<String, Object>() {
+                    {
+                        put("message", "Failed to predict with " + algoDescription + ": " + e.toString());
+                        put("isFraud", -1);
+                    }
+                };
             }
-            Map prediction = Collections.singletonMap("isFraud", y);
-            return new Object[]{ algorithm, prediction};
+            float finalY = y;
+            return new HashMap<String, Object>(){
+                    {
+                        put("message", "Predicted with " + algoDescription);
+                        put("isFraud", finalY);
+                    }
+            };
         }
-        return null;
+
+
+        return new HashMap<String, Object>(){
+            {
+                put("message", "Can't find algorithm in Database");
+                put("isFraud", -1);
+            }
+        };
     }
 }

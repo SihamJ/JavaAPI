@@ -3,6 +3,7 @@ package com.example.demo.api.model;
 import java.nio.FloatBuffer;
 import java.util.Collections;
 import ai.onnxruntime.*;
+import org.json.JSONArray;
 
 public class AlgorithmONNX extends Algorithm {
 
@@ -10,23 +11,24 @@ public class AlgorithmONNX extends Algorithm {
     private OrtSession.SessionOptions opts;
     private OrtSession session;
 
-    public AlgorithmONNX(int id, String name, String path, int type){
-        super(id, name, path, type);
+    public AlgorithmONNX(int id, String name, String description, String filename, int type){
+        super(id, name, description, filename, type);
     }
 
     public void loadAlgorithm() throws OrtException {
         this.env = OrtEnvironment.getEnvironment();
         this.opts = new OrtSession.SessionOptions();
         this.session = env.createSession("/home/sihartist/Desktop/JavaAPI/src/main/resources/models/" + this.getFilename(), opts);
+        this.loaded = Boolean.TRUE;
     }
 
-    public float predict(float[] values) throws OrtException{
+    public float predict(JSONArray values) throws OrtException{
 
         long[] shape = new long[] {1, 12, 1};
 
-        FloatBuffer buffer = FloatBuffer.allocate(values.length);
-        for (double d : values) {
-            buffer.put((float) d);
+        FloatBuffer buffer = FloatBuffer.allocate(values.length());
+        for (int i = 0; i < values.length(); i++) {
+            buffer.put(values.getFloat(i));
         }
         buffer.rewind();
 
@@ -37,12 +39,6 @@ public class AlgorithmONNX extends Algorithm {
 
         OnnxTensor resultTensor = (OnnxTensor) result.get(0);
         float[][] outputValues = (float[][]) resultTensor.getValue();
-
-        for(int i=0; i < outputValues.length; i++){
-            for(int j = 0; j < outputValues[i].length; j++){
-                System.out.println("Prediction [" + i + "][" + j + "] for " + session.getOutputNames() + ": " + outputValues[i][j]);
-            }
-        }
 
         result.close();
 
